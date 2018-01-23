@@ -18,6 +18,7 @@ class CookBookTVC: UITableViewController,Notifier {
     var receipeGroups = [String]()
     var receipes: [String:[Receipe]] = [:]
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    var isConnectedToNetwork = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,20 +31,33 @@ class CookBookTVC: UITableViewController,Notifier {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.center = (navigationController?.view.center)!
         activityIndicator.startAnimating()
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(self.fetchCookbooks), for: .valueChanged)
+        self.refreshControl = refreshControl
+        NotificationCenter.default.addObserver(self, selector: #selector(networkTypeChangedDashBoard), name: .networkChangedFlag, object: Network.reachability)
         
-        
-        NetworkQueries().fetchCookbook { (receipes, error) in
-            guard error.isEmpty else{
-                self.displayAlert(title: "Error", message: error)
-                return
+        fetchCookbooks()
+    }
+    
+    @objc fileprivate func fetchCookbooks(){
+        //checks if the app is connected to the network, then only makes the network call
+        if isConnectedToNetwork{
+            NetworkQueries().fetchCookbook { (receipes, error) in
+                guard error.isEmpty else{
+                    self.displayAlert(title: "Error", message: error)
+                    return
+                }
+                if let rec = receipes{
+                    self.receipes = rec
+                    self.receipeGroups = Array((receipes?.keys)!)
+                    self.tableView.reloadData()
+                    self.activityIndicator.stopAnimating()
+                }
+                self.refreshControl?.endRefreshing()
             }
-            if let rec = receipes{
-                self.receipes = rec
-                self.receipeGroups = Array((receipes?.keys)!)
-                self.tableView.reloadData()
-                self.activityIndicator.stopAnimating()
-            }
-            
+        }else{
+            self.refreshControl?.endRefreshing()
+            self.displayAlert(title: "Connectivity Issues", message: "Check your internet connection")
         }
     }
 
@@ -95,6 +109,22 @@ class CookBookTVC: UITableViewController,Notifier {
             navigationItem.rightBarButtonItem = nil
         }
     }
+    
+    /// When network status chnages this will fire
+    ///
+    /// - Parameter notification: notification object
+    @objc func networkTypeChangedDashBoard(_ notification: NSNotification) {
+        guard let status = Network.reachability?.status else { return }
+        switch status {
+        case .unreachable:
+            isConnectedToNetwork = false
+        case .wifi:
+            isConnectedToNetwork = true
+        case .wwan:
+            isConnectedToNetwork = true
+        }
+    }
+
 
 }
 
