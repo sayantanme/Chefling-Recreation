@@ -11,6 +11,7 @@
     </dependencies>
     <customFonts key="customFonts">
         <array key="Courier.ttc">
+            <string>Courier</string>
             <string>Courier-Bold</string>
         </array>
         <array key="CourierNew.ttf">
@@ -45,7 +46,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="collectionCells" rowHeight="300" id="Z22-xe-rND" customClass="CookbookSectionCell" customModule="Chefling_Recreation" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="collectionCells" rowHeight="300" id="Z22-xe-rND" customClass="CookbookSectionCell" customModule="Chefling_Recreation" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Z22-xe-rND" id="5eg-8N-PuB">
@@ -72,7 +73,7 @@
                                                 <size key="itemSize" width="200" height="220"/>
                                                 <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                 <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                                <inset key="sectionInset" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                             </collectionViewFlowLayout>
                                             <cells>
                                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="collCell" id="g2J-UK-lfE" customClass="ReceipeCollectionViewCell" customModule="Chefling_Recreation" customModuleProvider="target">
@@ -85,7 +86,7 @@
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gmu-s7-J1S">
                                                                 <rect key="frame" x="0.0" y="0.0" width="200" height="180"/>
                                                                 <subviews>
-                                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IMG_1242-0011-300x200" translatesAutoresizingMaskIntoConstraints="NO" id="jl6-DU-75J">
+                                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jl6-DU-75J">
                                                                         <rect key="frame" x="0.0" y="0.0" width="200" height="180"/>
                                                                     </imageView>
                                                                 </subviews>
@@ -106,6 +107,7 @@
                                                         </subviews>
                                                     </view>
                                                     <constraints>
+                                                        <constraint firstAttribute="bottomMargin" secondItem="ijV-fd-W9E" secondAttribute="bottom" constant="10" id="433-qf-XQ2"/>
                                                         <constraint firstItem="Gmu-s7-J1S" firstAttribute="trailing" secondItem="ijV-fd-W9E" secondAttribute="trailing" id="7Xe-AL-N55"/>
                                                         <constraint firstItem="ijV-fd-W9E" firstAttribute="top" secondItem="Gmu-s7-J1S" secondAttribute="bottom" constant="9" id="7vQ-Rg-nOb"/>
                                                         <constraint firstAttribute="trailing" secondItem="Gmu-s7-J1S" secondAttribute="trailing" id="8KD-d9-lNT"/>
@@ -122,14 +124,26 @@
                                                 </collectionViewCell>
                                             </cells>
                                         </collectionView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="All &gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xhy-Fv-6jO">
+                                            <rect key="frame" x="317" y="15" width="42" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="42" id="EqJ-w1-PPk"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="11"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="13V-Pv-lj1" firstAttribute="top" secondItem="Xhy-Fv-6jO" secondAttribute="bottom" constant="4" id="8FV-SK-Kv4"/>
                                         <constraint firstItem="OmM-91-hyC" firstAttribute="leading" secondItem="5eg-8N-PuB" secondAttribute="leadingMargin" id="Dlx-wB-GXV"/>
                                         <constraint firstAttribute="trailing" secondItem="13V-Pv-lj1" secondAttribute="trailing" id="H4j-YS-0PN"/>
                                         <constraint firstItem="13V-Pv-lj1" firstAttribute="top" secondItem="OmM-91-hyC" secondAttribute="bottom" constant="1" id="amR-3X-Kuh"/>
+                                        <constraint firstItem="Xhy-Fv-6jO" firstAttribute="centerY" secondItem="OmM-91-hyC" secondAttribute="centerY" id="cU3-bq-Xbs"/>
                                         <constraint firstItem="OmM-91-hyC" firstAttribute="top" secondItem="5eg-8N-PuB" secondAttribute="topMargin" id="ct1-cc-fsr"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="13V-Pv-lj1" secondAttribute="bottom" constant="-11" id="koZ-z6-rnd"/>
                                         <constraint firstItem="13V-Pv-lj1" firstAttribute="leading" secondItem="5eg-8N-PuB" secondAttribute="leading" id="lmE-sx-40a"/>
+                                        <constraint firstItem="Xhy-Fv-6jO" firstAttribute="trailing" secondItem="5eg-8N-PuB" secondAttribute="trailingMargin" id="m4Q-NY-RAl"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -159,6 +173,5 @@
     </scenes>
     <resources>
         <image name="3" width="16" height="16"/>
-        <image name="IMG_1242-0011-300x200" width="300" height="200"/>
     </resources>
 </document>

@@ -11,6 +11,8 @@ import UIKit
 class ReceipeCollectionViewCell: UICollectionViewCell {
     
 
+    @IBOutlet weak var receipeLabel: UILabel!
+    @IBOutlet weak var imgReceipe: UIImageView!
     @IBOutlet weak var containerView: UIView!
     
 }

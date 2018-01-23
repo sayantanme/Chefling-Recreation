@@ -8,13 +8,16 @@
 
 import UIKit
 
-class CookBookTVC: UITableViewController {
+class CookBookTVC: UITableViewController,Notifier {
 
     
     @IBOutlet var searchitem: UIBarButtonItem!
     let model: [[UIColor]] = generateRandomData()
     var storedOffsets = [Int: CGFloat]()
     let searchController = UISearchController(searchResultsController: nil)
+    var receipeGroups = [String]()
+    var receipes: [String:[Receipe]] = [:]
+    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +25,26 @@ class CookBookTVC: UITableViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
         navigationItem.rightBarButtonItem = nil
+        
+        navigationController?.view.addSubview(activityIndicator)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.center = (navigationController?.view.center)!
+        activityIndicator.startAnimating()
+        
+        
+        NetworkQueries().fetchCookbook { (receipes, error) in
+            guard error.isEmpty else{
+                self.displayAlert(title: "Error", message: error)
+                return
+            }
+            if let rec = receipes{
+                self.receipes = rec
+                self.receipeGroups = Array((receipes?.keys)!)
+                self.tableView.reloadData()
+                self.activityIndicator.stopAnimating()
+            }
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -37,13 +60,13 @@ class CookBookTVC: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.count
+        return receipeGroups.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "collectionCells", for: indexPath)
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: "collectionCells", for: indexPath) as! CookbookSectionCell
+        cell.sectionHeaderText.text = receipeGroups[indexPath.row]
         // Configure the cell...
 
         return cell
@@ -62,19 +85,9 @@ class CookBookTVC: UITableViewController {
         
         storedOffsets[indexPath.row] = tableViewCell.collectionViewOffset
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > -80 {
+        if scrollView.contentOffset.y > -80 && scrollView.contentOffset.y != 0{
             if navigationItem.rightBarButtonItem == nil {
                 navigationItem.rightBarButtonItem = searchitem
             }
@@ -85,12 +98,13 @@ class CookBookTVC: UITableViewController {
 
 }
 
-
+///extension for the collection view inside each tableview cell
 extension CookBookTVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         
-        return model[collectionView.tag].count
+        let key = receipeGroups[collectionView.tag]
+        return self.receipes[key]!.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -99,11 +113,20 @@ extension CookBookTVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collCell",
                                                       for: indexPath) as! ReceipeCollectionViewCell
         
-        cell.dropShadow()
+        
+        let key = receipeGroups[collectionView.tag]
+        let allReceipeForGroup = receipes[key]
+        let rcpe = allReceipeForGroup![indexPath.row]
+        
+        cell.receipeLabel.text = rcpe.recipename
         cell.containerView.backgroundColor = model[collectionView.tag][indexPath.item]
-        cell.containerView.layer.masksToBounds = true
+        //cell.containerView.layer.masksToBounds = true
         cell.containerView.layer.cornerRadius = 10
-        cell.backgroundColor = model[collectionView.tag][indexPath.item]
+        cell.imgReceipe.layer.masksToBounds = true
+        cell.imgReceipe.layer.cornerRadius = 10
+        cell.imgReceipe.loadImageFromImageUrlFromCache(url: rcpe.recipephoto!)
+        
+        cell.containerView.dropShadow()
         
         return cell
     }
